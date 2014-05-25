@@ -11,8 +11,8 @@ function callAPI(method, data, callback) {
 }
 
 callAPI("auth", {
-	"username": "mort",
-	"password": "aaa"
+	"username": "root",
+	"password": "root"
 }, function(data) {
 	console.log(data);
 	callAPI("testToken", {
