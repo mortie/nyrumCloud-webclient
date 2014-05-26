@@ -1,23 +1,15 @@
-function callAPI(method, data, callback) {
-	$.ajax({
-		"method": "POST",
-		"url": "http://localhost:1337/"+method,
-		"data": JSON.stringify(data),
-		"dataType": "text",
-		"success": function(res) {
-			callback(JSON.parse(res));
-		}
-	})
-}
-
-callAPI("auth", {
+lib.callAPI("auth", 
+{
 	"username": "root",
 	"password": "root"
-}, function(data) {
+}, function(data)
+{
 	console.log(data);
-	callAPI("testToken", {
+	lib.callAPI("testToken",
+	{
 		"token": data.token
-	}, function(data) {
+	}, function(data)
+	{
 		console.log(data);
 	});
 });
