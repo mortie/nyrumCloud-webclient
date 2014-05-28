@@ -11,6 +11,7 @@
 		$("#fileUploadInput").on("change", function(e)
 		{
 			uploadFiles(e.target.files);
+			e.target.value = "";
 		});
 	}
 
@@ -30,22 +31,31 @@
 		if (window.File && window.FileReader && window.FileList && window.Blob)
 		{
 			var i;
-			var file;
-			for (i=0; file=files[i]; ++i)
+			for (i=0; i<files.length; ++i)
 			{
-				console.log("doing "+file.name);
-				var reader = new FileReader();
-
-				reader.onload = function(e)
+				var file = files[i];
+				if (file)
 				{
-					lib.callAPI("uploadFile",
-					{
-						"name": file.name,
-						"data": e.target.result
-					});
-				}
+					var reader = new FileReader();
 
-				reader.readAsBinaryString(file);
+					reader.onload = function(e)
+					{
+						var reader = e.target;
+
+						lib.callAPI("uploadFile",
+						{
+							"name": reader.file.name,
+							"data": reader.result,
+							"mimetype": reader.file.type
+						}, function(data)
+						{
+							console.log(data);
+						});
+					};
+
+					reader.file = file;
+					reader.readAsBinaryString(file);
+				}
 			}
 		}
 		else
