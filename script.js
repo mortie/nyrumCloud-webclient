@@ -1,14 +1,6 @@
-lib.callAPI("auth", 
+lib.auth("root", "root", function(data)
 {
-	"username": "root",
-	"password": "root"
-}, function(data)
-{
-	console.log(data);
-	lib.callAPI("testToken",
-	{
-		"token": data.token
-	}, function(data)
+	lib.callAPI("testToken", {}, function(data)
 	{
 		console.log(data);
 	});
