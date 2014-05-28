@@ -14,7 +14,8 @@
 			"dataType": "text",
 			"success": function(data)
 			{
-				callback(JSON.parse(data));
+				if (callback)
+					callback(JSON.parse(data));
 			}
 		});
 	}
@@ -33,10 +34,17 @@
 			"dataType": "text",
 			"success": function(data)
 			{
-				data = JSON.parse(data);
-				token = data.token;
+				if (callback)
+				{
+					data = JSON.parse(data);
+					if (data.err)
+					{
+						console.log("Error: "+data.err);
+					}
+					token = data.token;
 
-				callback(data);
+					callback(data);
+				}
 			}
 		});
 	}
