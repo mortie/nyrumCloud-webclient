@@ -1,32 +1,109 @@
 (function()
 {
-	lib.auth("root", "root", init);
+	var currentDir = window.location.hash.substring(1) || null;
+	var parentDir;
 
-	var currentDir = "";
+	lib.auth("root", "root", function()
+	{
+		lib.callAPI("getParentDir",
+		{
+			"id": currentDir
+		}, function(data)
+		{
+			parentDir = data.id;
+			init();
+		});
+	});
+
+
+	//functions to be run from the DOM
+	window.domFuncs = {};
+
+	domFuncs.changeDir = function(id)
+	{
+		currentDir = id;
+		window.location.hash = id;
+		console.log("parent: "+parentDir, "current: "+id);
+
+		//get parent dir
+		lib.callAPI("getParentDir",
+		{
+			"id": id
+		}, function(data)
+		{
+			parentDir = data.id;
+			drawBrowser();
+		});
+	}
 
 	function init()
 	{
 		//start by drawing the file browser
 		drawBrowser();
+
+		//upload file handler
 		$("#fileUploadInput").on("change", function(e)
 		{
-			uploadFiles(e.target.files);
+			uploadFiles(e.target.files, function(data)
+			{
+				drawBrowser();
+			});
 			e.target.value = "";
+		});
+
+		//new dir button handler
+		$("#makeDir").on("click", function(e)
+		{
+			lib.callAPI("makeDir", 
+			{
+				"name": "New Folder",
+				"parent": currentDir
+			}, function(data)
+			{
+				drawBrowser();
+			});
 		});
 	}
 
 	function drawBrowser()
 	{
+		function draw(template, arr, element)
+		{
+			arr.forEach(function(entry)
+			{
+				var html = lib.template(template,
+				{
+					"name": entry.name,
+					"id": entry.id
+				});
+
+				element.append(html);
+			});
+		};
+
 		lib.callAPI("listDir",
 		{
-			"parent": currentDir
+			"id": currentDir
 		}, function(data)
 		{
-			console.log(data);
+			var browser = $("#browser");
+
+			//clear browser
+			browser.empty();
+
+			//draw link to parent
+			browser.append(lib.template("parentDirLink",
+			{
+				"id": parentDir || null
+			}));
+
+			//draw files and dirs
+			draw("browserDirEntry", data.directories, browser);
+			draw("browserFileEntry", data.files, browser);
 		});
 	}
 
-	function uploadFiles(files)
+	function uploadFiles(files, callback)
 	{
 		if (window.File && window.FileReader && window.FileList && window.Blob)
 		{
@@ -46,10 +123,11 @@
 						{
 							"name": reader.file.name,
 							"data": reader.result,
-							"mimetype": reader.file.type
+							"mimetype": reader.file.type,
+							"parent": currentDir
 						}, function(data)
 						{
-							console.log(data);
+							callback(data);
 						});
 					};
 

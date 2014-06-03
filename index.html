@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>NyrumCloud</title>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 	<div id="hidden">
@@ -20,5 +21,28 @@
 	<script src="js/jquery.min.js"></script>
 	<script src="js/lib.js"></script>
 	<script src="js/script.js"></script>
+
+	<div id="templates">
+		<div class="browserDirEntry">
+			<div class="entry dir">
+				<img class="icon" src="img/icon/dir.png">
+				<a href="javascript:domFuncs.changeDir({id})">{name}</a> 
+			</div>
+		</div>
+
+		<div class="browserFileEntry">
+			<div class="entry file">
+				<img class="icon" src="img/icon/file.png">
+				<a href="javascript:domFuncs.downloadFile({id})">{name}</a>
+			</div>
+		</div>
+
+		<div class="parentDirLink">
+			<div class="entry parent">
+				<img class="icon" src="img/icon/parent.png">
+				<a href="javascript:domFuncs.changeDir({id})">Parent</a>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

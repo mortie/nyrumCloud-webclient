@@ -16,7 +16,7 @@
 			{
 				data = JSON.parse(data);
 				if (data.err)
-					console.log("Error: "+data.err);
+					console.log("Error: "+data.err+" from "+method);
 				if (callback)
 					callback(data);
 			}
@@ -47,5 +47,16 @@
 					callback(data);
 			}
 		});
+	}
+
+	lib.template = function(name, args)
+	{
+		var str = $("#templates ."+name)[0].innerHTML;
+		var i;
+		for (i in args)
+		{
+			str = str.split("{"+i+"}").join(args[i]);
+		}
+		return str;
 	}
 })();
